@@ -1,0 +1,44 @@
+server:
+  port: 8080
+
+#using:
+#  spring:
+#    schedulerFactory: true;
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:15432/batchadm?currentSchema=quartz,public
+    username: myclude
+    password: Qe2468wf!
+    hikari:
+      maximum-pool-size: 4
+      jdbc-url: jdbc:postgresql://localhost:15432/batchadm?currentSchema=quartz,public
+      username: myclude
+      password: Qe2468wf!
+      driver-class-name: org.postgresql.Driver
+
+  quartz:
+    job-store-type: jdbc
+    properties:
+      org:
+        quartz:
+          threadPool:
+            threadCount: 10
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+          plugin:
+            shutdownHook:
+              class: org.quartz.plugins.management.ShutdownHookPlugin
+              cleanShutdown: true
+
+mybatis:
+  mapper-locations: mapper/**/*_Mapper.xml
+  configuration:
+    map-underscore-to-camel-case: true
+  type-aliases-package: me.myclude.quartz
+
+logging:
+  level:
+    me.myclude.quartz: debug
