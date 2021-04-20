@@ -2,6 +2,7 @@ package me.myclude.quartz.conf;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.myclude.quartz.info.TimerInfo;
 import me.myclude.quartz.jobs.HelloWorldJob;
 import me.myclude.quartz.jobs.dto.BatchList;
 import me.myclude.quartz.sample.dto.Account;
@@ -29,7 +30,33 @@ public class QuartzStartConfiguration {
         List<BatchList> allData = sampleService.getAll();
 
         for(BatchList a : allData) {
+
             System.out.println("a.toString() = " + a.toString());
+
+            try {
+
+                Class<?> batchClass = Class.forName(a.getBatchName());
+
+                log.debug("⚉⚉⚉⚉⚉⚉⚉ batch class name : {} ⚉⚉⚉⚉⚉⚉⚉⚉", batchClass.getSimpleName());
+
+                TimerInfo timerInfo = new TimerInfo();
+                timerInfo.setTotalFireCount(a.getTotalFireCount());
+                timerInfo.setRemainingFireCount(a.getRemainingFireCount());
+                timerInfo.setCron(a.isCron());
+                timerInfo.setRepeatIntervalMs(a.getRepeatIntervalMs());
+                timerInfo.setInitialOffsetMs(a.getInitialOffsetMs());
+                timerInfo.setRunForever(a.isRunForever());
+                timerInfo.setCallbackData(a.getCallBackData());
+                timerInfo.setCronExpr(a.getCronExpr());
+
+                service.schedule(batchClass, timerInfo);
+
+            } catch (ClassNotFoundException e) {
+                log.error("this class is not found !! {}", a.getBatchName());
+            } catch (Exception e) {
+                log.error("holly Shit!!" + a.getBatchName());
+                log.error(e.getMessage());
+            }
         }
 
     }
