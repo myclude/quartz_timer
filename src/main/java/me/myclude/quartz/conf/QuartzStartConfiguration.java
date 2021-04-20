@@ -2,6 +2,8 @@ package me.myclude.quartz.conf;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.myclude.quartz.jobs.HelloWorldJob;
+import me.myclude.quartz.jobs.dto.BatchList;
 import me.myclude.quartz.sample.dto.Account;
 import me.myclude.quartz.sample.service.SampleService;
 import me.myclude.quartz.timerservice.SchedulerService;
@@ -24,8 +26,9 @@ public class QuartzStartConfiguration {
         //최초 수행 시 해당 메소드에서 진행
         log.info("JobController start invoked!!!!");
 
-        List<Account> allData = sampleService.getAll();
-        for(Account a : allData) {
+        List<BatchList> allData = sampleService.getAll();
+
+        for(BatchList a : allData) {
             System.out.println("a.toString() = " + a.toString());
         }
 

@@ -1,11 +1,21 @@
 server:
   port: 8080
 
+spring:
+  profiles:
+    active: h2
+
 #using:
 #  spring:
 #    schedulerFactory: true;
 
+---
+
 spring:
+  config:
+    activate:
+      on-profile: postgres
+
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:15432/batchadm?currentSchema=quartz,public
@@ -17,6 +27,26 @@ spring:
       username: myclude
       password: Qe2468wf!
       driver-class-name: org.postgresql.Driver
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: h2
+
+  datasource:
+    driver-class-name: org.h2.Driver  #h2 드라이버 설정
+    url: jdbc:h2:tcp://localhost/~/batch  #접속 URL
+    username: sa  # 사용자 이름 (로그인 시 사용)
+    password:     # 사용자 암호 (로그인 시 사용)
+    hikari:
+      maximum-pool-size: 4
+      jdbc-url: jdbc:h2:tcp://localhost/~/batch #접속 URL
+      username: sa
+      password:
+      driver-class-name: org.h2.Driver
+
 
   quartz:
     job-store-type: jdbc

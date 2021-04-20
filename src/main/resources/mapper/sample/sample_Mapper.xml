@@ -2,8 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="me.myclude.quartz.sample.mapper.SampleMapper">
 
-    <select id="getAll" resultType="me.myclude.quartz.sample.dto.Account">
-        SELECT * FROM ACCOUNT
+    <select id="getAll" resultType="me.myclude.quartz.jobs.dto.BatchList">
+        SELECT  ID,
+                BATCH_NAME,
+                TOTAL_FIRE_COUNT,
+                REMAINING_FIRE_COUNT,
+                RUN_FOREVER,
+                IS_CRON,
+                REPEAT_INTERVAL_MS,
+                INITIAL_OFFSET_MS,
+                CRON_EXPR,
+                CALLBACK_DATA
+        FROM    BATCH_LIST
     </select>
 
 </mapper>
