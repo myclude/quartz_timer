@@ -27,8 +27,8 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.4'
-//    runtimeOnly 'org.postgresql:postgresql'
-    runtimeOnly 'com.h2database:h2:1.4.199'
+    runtimeOnly 'org.postgresql:postgresql'
+//    runtimeOnly 'com.h2database:h2:1.4.199'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 

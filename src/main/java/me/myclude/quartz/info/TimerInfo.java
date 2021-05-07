@@ -1,5 +1,6 @@
 package me.myclude.quartz.info;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,4 +26,15 @@ public class TimerInfo implements Serializable {
     //만들어 진 job의 데이터를 전달해야 할 경우 (전달정보)
     private String callbackData;
 
+    @Builder
+    public TimerInfo(int totalFireCount, int remainingFireCount, boolean runForever, boolean isCron, long repeatIntervalMs, long initialOffsetMs, String cronExpr, String callbackData) {
+        this.totalFireCount = totalFireCount;
+        this.remainingFireCount = remainingFireCount;
+        this.runForever = runForever;
+        this.isCron = isCron;
+        this.repeatIntervalMs = repeatIntervalMs;
+        this.initialOffsetMs = initialOffsetMs;
+        this.cronExpr = cronExpr;
+        this.callbackData = callbackData;
+    }
 }

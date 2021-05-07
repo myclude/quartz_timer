@@ -3,9 +3,7 @@ package me.myclude.quartz.conf;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.myclude.quartz.info.TimerInfo;
-import me.myclude.quartz.jobs.HelloWorldJob;
 import me.myclude.quartz.jobs.dto.BatchList;
-import me.myclude.quartz.sample.dto.Account;
 import me.myclude.quartz.sample.service.SampleService;
 import me.myclude.quartz.timerservice.SchedulerService;
 import org.springframework.stereotype.Component;
@@ -27,36 +25,49 @@ public class QuartzStartConfiguration {
         //최초 수행 시 해당 메소드에서 진행
         log.info("JobController start invoked!!!!");
 
-        List<BatchList> allData = sampleService.getAll();
+        List<BatchList> allData;
 
-        for(BatchList a : allData) {
+        try {
+            allData = sampleService.getAll();
+        } catch (Exception e) {
+            log.error("Data Select Exception!!", e);
+            throw e;
+        }
 
-            System.out.println("a.toString() = " + a.toString());
+        if (allData != null) {
 
-            try {
+            for (BatchList a : allData) {
 
-                Class<?> batchClass = Class.forName(a.getBatchName());
+                System.out.println("a.toString() = " + a.toString());
 
-                log.debug("⚉⚉⚉⚉⚉⚉⚉ batch class name : {} ⚉⚉⚉⚉⚉⚉⚉⚉", batchClass.getSimpleName());
+                try {
 
-                TimerInfo timerInfo = new TimerInfo();
-                timerInfo.setTotalFireCount(a.getTotalFireCount());
-                timerInfo.setRemainingFireCount(a.getRemainingFireCount());
-                timerInfo.setCron(a.isCron());
-                timerInfo.setRepeatIntervalMs(a.getRepeatIntervalMs());
-                timerInfo.setInitialOffsetMs(a.getInitialOffsetMs());
-                timerInfo.setRunForever(a.isRunForever());
-                timerInfo.setCallbackData(a.getCallBackData());
-                timerInfo.setCronExpr(a.getCronExpr());
+                    Class<?> batchClass = Class.forName(a.getBatchName());
 
-                service.schedule(batchClass, timerInfo);
+                    log.debug("⚉⚉⚉⚉⚉⚉⚉ batch class name : {} ⚉⚉⚉⚉⚉⚉⚉⚉", batchClass.getSimpleName());
 
-            } catch (ClassNotFoundException e) {
-                log.error("this class is not found !! {}", a.getBatchName());
-            } catch (Exception e) {
-                log.error("holly Shit!!" + a.getBatchName());
-                log.error(e.getMessage());
+                    TimerInfo timerInfo = TimerInfo.builder()
+                            .totalFireCount(a.getTotalFireCount())
+                            .remainingFireCount(a.getRemainingFireCount())
+                            .isCron(a.isCron())
+                            .repeatIntervalMs(a.getRepeatIntervalMs())
+                            .initialOffsetMs(a.getInitialOffsetMs())
+                            .runForever(a.isRunForever())
+                            .callbackData(a.getCallBackData())
+                            .cronExpr(a.getCronExpr())
+                            .build();
+
+                    service.schedule(batchClass, timerInfo);
+
+                } catch (ClassNotFoundException e) {
+                    log.error("this class is not found !! {}", a.getBatchName());
+                } catch (Exception e) {
+                    log.error("holly Shit!!" + a.getBatchName());
+                    log.error(e.getMessage());
+                }
             }
+        } else {
+            log.info("no scheduler!! we just waited...");
         }
 
     }
